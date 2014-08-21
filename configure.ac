@@ -1,7 +1,7 @@
 # Autoconf Minimum Version Required Check
 AC_PREREQ([2.68])
 # Initilise Autoconf with project Name and Version Details
-AC_INIT([loggerc], [1.0.0], [sahoorajesh.d@gmail.com], [loggerc], [https://github.com/rajesh6115/loggerc])
+AC_INIT([clogger], [1.0.0], [sahoorajesh.d@gmail.com], [clogger], [https://github.com/rajesh6115/loggerc])
 # Put autotools auxiliary files in a subdir, so they don't clutter top dir:
 AC_CONFIG_AUX_DIR([build-aux])
 # Initialise Automake with Default version Number and Default CPP flags
