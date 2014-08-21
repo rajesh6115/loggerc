@@ -1,0 +1,9 @@
+ACLOCAL_AMFLAGS = -I m4
+lib_LIBRARIES = libclogger.a 
+libclogger_a_SOURCES = clogger.c
+libclogger_a_CPPFLAGS = -I ${top_srcdir}/include
+lib_LTLIBRARIES = libclogger.la
+libclogger_la_SOURCES = clogger.c
+libclogger_la_CFLAGS=-fPIC
+libclogger_la_CPPFLAGS=-fPIC -I ${top_srcdir}/include
+libclogger_la_LDFLAGS= -shared -fPIC
