@@ -1,0 +1,23 @@
+commit e0cac986a01c0cf749354b7f04a9f174225d3c89
+Author: Rajesh Kumar Sahoo <sahoorajesh.d@gmail.com>
+Date:   Thu Aug 21 23:49:02 2014 +0530
+
+    Added All dist files
+
+commit f75e0ba020362216adcf59eb3be6872f201f7971
+Author: Rajesh Kumar Sahoo <sahoorajesh.d@gmail.com>
+Date:   Thu Aug 21 23:12:06 2014 +0530
+
+    package name changed to clogger
+
+commit a3609eb10a28f7db0dac9629855250d05f78a384
+Author: Rajesh Kumar Sahoo <sahoorajesh.d@gmail.com>
+Date:   Thu Aug 21 22:51:44 2014 +0530
+
+    My Logger Initial Tested Version
+
+commit a0a0ea83e5c23939d2c2d556d8819ab21fae74d2
+Author: RAJESH KUMAR SAHOO <sahoorajesh.d@gmail.com>
+Date:   Thu Aug 21 21:52:25 2014 +0530
+
+    Initial commit
