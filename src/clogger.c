@@ -23,6 +23,9 @@ logger_p logger_init(void)
 		log->interval = DFL_INTERVAL;
 		log->create_time = 0;
 		log->fp = NULL;
+#ifdef ENABLE_THREADS
+		pthread_mutex_init(&log->file_lock, NULL);
+#endif
 		return log;
 	}
 }
@@ -32,8 +35,10 @@ int logger_cleanup(logger_p log)
 	if(log)
 	{
 		logger_close(log);
+#ifdef ENABLE_THREADS
+		pthread_mutex_destroy(&log->file_lock);
+#endif
 		free(log);
-		
 		return 0;
 	}
 	else
@@ -41,6 +46,28 @@ int logger_cleanup(logger_p log)
 		return -1;
 	}
 }
+
+#ifdef ENABLE_THREADS
+int logger_lock(logger_p log){
+	if(log){
+		pthread_mutex_lock(&log->file_lock);
+		return 0;
+	}else{
+		return -1;
+	}
+}
+
+int logger_unlock(logger_p log){
+	if(log){
+		pthread_mutex_unlock(&log->file_lock);
+		return 0;
+	}else{
+		return -1;
+	}
+
+}
+
+#endif
 
 int logger_open(logger_p log)
 {

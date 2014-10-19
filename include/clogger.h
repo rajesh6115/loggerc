@@ -6,11 +6,16 @@
 
 #ifndef _LOGGER_C_H_
 #define _LOGGER_C_H_
+#define ENABLE_THREADS
 #include <stdio.h>
 #include <time.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdarg.h>
+
+#ifdef ENABLE_THREADS
+#include <pthread.h>
+#endif
 
 #define PATH_MAX_SIZE 256
 #define NAME_MAX_SIZE 64
@@ -43,16 +48,28 @@ typedef struct logger{
 	char path[PATH_MAX_SIZE];
 	char name[NAME_MAX_SIZE];
 	char tag[TAG_MAX_SIZE];
+#ifdef ENABLE_THREADS
+	pthread_mutex_t file_lock;
+#endif
 }logger_t;
 typedef logger_t * logger_p;
 
 logger_p logger_init(void);
 int logger_cleanup(logger_p);
+#ifdef ENABLE_THREADS
+int logger_lock(logger_p);
+int logger_unlock(logger_p);
+#endif
 int logger_open(logger_p);
 int logger_close(logger_p);
 int logger_set(logger_p ,unsigned int option, const char *);
 int logger_log_header(logger_p log,unsigned int log_level ,const char *leveltag ,const char *srcname ,unsigned int line_no);
 int logger_log_message(logger_p ,char *format ,...);
+#define DBG_VERBOSE(OBJECT,PRINTDATA) { OBJECT.mcfn_Lock();OBJECT.mcfn_logCallerInfo(VERBOSE,"~VB~",__FILE__,__LINE__); OBJECT.mcfn_logMessage PRINTDATA;OBJECT.mcfn_Unlock();} 
+#define DBG_INFO(OBJECT,PRINTDATA) { OBJECT.mcfn_Lock();OBJECT.mcfn_logCallerInfo(INFO,"~IN~",__FILE__,__LINE__); OBJECT.mcfn_logMessage PRINTDATA;OBJECT.mcfn_Unlock();}
+#define DBG_ERROR(OBJECT,PRINTDATA) { OBJECT.mcfn_Lock();OBJECT.mcfn_logCallerInfo(LOGERROR,"~ER~",__FILE__,__LINE__); OBJECT.mcfn_logMessage PRINTDATA;OBJECT.mcfn_Unlock();}
+#define DBG_CRITICAL(OBJECT,PRINTDATA) { OBJECT.mcfn_Lock();OBJECT.mcfn_logCallerInfo(CRITICAL,"~CR~",__FILE__,__LINE__); OBJECT.mcfn_logMessage PRINTDATA;OBJECT.mcfn_Unlock();}
+#define DBG_LOGMSG(OBJECT,PRINTDATA) { OBJECT.mcfn_Lock();OBJECT.mcfn_logCallerInfo(CRITICAL,"~LM~",__FILE__,__LINE__); OBJECT.mcfn_logMessage PRINTDATA;OBJECT.mcfn_Unlock();}
 
 #endif
 
