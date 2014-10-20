@@ -6,13 +6,13 @@
 
 #ifndef _LOGGER_C_H_
 #define _LOGGER_C_H_
-#define ENABLE_THREADS
 #include <stdio.h>
 #include <time.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdarg.h>
 
+#include "config.h"
 #ifdef ENABLE_THREADS
 #include <pthread.h>
 #endif
@@ -32,6 +32,12 @@
 #define LOG_DEFAULT 8
 #define LOG_CONT 9
 #define LOG_CONSOL 10
+#define APP_LOGGER(OBJECT, LOG_LEVEL, LOGDATA) {\
+	logger_lock(OBJECT);\
+	logger_log_header(OBJECT, LOG_LEVEL,__FILE__,__LINE__);\
+	logger_log_message(OBJECT, LOGDATA);\
+	logger_unlock(OBJECT);\
+	}
 
 #define DFL_NAME "united"
 #define DFL_PATH "."
@@ -40,14 +46,15 @@
 #define DFL_LEVEL 5
 
 typedef struct logger{
-	FILE *fp;
-	unsigned int level;
-	unsigned int is_log;
-	time_t create_time;
-	time_t interval;
-	char path[PATH_MAX_SIZE];
-	char name[NAME_MAX_SIZE];
-	char tag[TAG_MAX_SIZE];
+	FILE *fp;  /* File pointer to hold file*/
+	unsigned int level; /* Level Of Logging*/
+	unsigned int is_log; /* Should Log or Not*/
+	time_t create_time; /* File Creation Time*/
+	time_t interval; /* New File Creation Interval*/
+	char path[PATH_MAX_SIZE]; /* Log file path*/
+	char name[NAME_MAX_SIZE]; /*Log file name*/
+	char tag[TAG_MAX_SIZE]; /*APPLICATION TAG*/
+	char *leveltag[11]; /*Log Level Tags Strings*/
 #ifdef ENABLE_THREADS
 	pthread_mutex_t file_lock;
 #endif
@@ -62,14 +69,9 @@ int logger_unlock(logger_p);
 #endif
 int logger_open(logger_p);
 int logger_close(logger_p);
-int logger_set(logger_p ,unsigned int option, const char *);
-int logger_log_header(logger_p log,unsigned int log_level ,const char *leveltag ,const char *srcname ,unsigned int line_no);
+int logger_set(logger_p, unsigned int option, const char *);
+int logger_log_header(logger_p log, unsigned int log_level, const char *srcname, unsigned int line_no);
 int logger_log_message(logger_p ,char *format ,...);
-#define DBG_VERBOSE(OBJECT,PRINTDATA) { OBJECT.mcfn_Lock();OBJECT.mcfn_logCallerInfo(VERBOSE,"~VB~",__FILE__,__LINE__); OBJECT.mcfn_logMessage PRINTDATA;OBJECT.mcfn_Unlock();} 
-#define DBG_INFO(OBJECT,PRINTDATA) { OBJECT.mcfn_Lock();OBJECT.mcfn_logCallerInfo(INFO,"~IN~",__FILE__,__LINE__); OBJECT.mcfn_logMessage PRINTDATA;OBJECT.mcfn_Unlock();}
-#define DBG_ERROR(OBJECT,PRINTDATA) { OBJECT.mcfn_Lock();OBJECT.mcfn_logCallerInfo(LOGERROR,"~ER~",__FILE__,__LINE__); OBJECT.mcfn_logMessage PRINTDATA;OBJECT.mcfn_Unlock();}
-#define DBG_CRITICAL(OBJECT,PRINTDATA) { OBJECT.mcfn_Lock();OBJECT.mcfn_logCallerInfo(CRITICAL,"~CR~",__FILE__,__LINE__); OBJECT.mcfn_logMessage PRINTDATA;OBJECT.mcfn_Unlock();}
-#define DBG_LOGMSG(OBJECT,PRINTDATA) { OBJECT.mcfn_Lock();OBJECT.mcfn_logCallerInfo(CRITICAL,"~LM~",__FILE__,__LINE__); OBJECT.mcfn_logMessage PRINTDATA;OBJECT.mcfn_Unlock();}
 
 #endif
 

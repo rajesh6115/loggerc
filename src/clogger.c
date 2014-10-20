@@ -23,6 +23,17 @@ logger_p logger_init(void)
 		log->interval = DFL_INTERVAL;
 		log->create_time = 0;
 		log->fp = NULL;
+		log->leveltag[0] = "~EMR~";
+		log->leveltag[1] = "~ALT~";
+		log->leveltag[2] = "~CRT~";
+		log->leveltag[3] = "~ERR~";
+		log->leveltag[4] = "~WRN~";
+		log->leveltag[5] = "~NTC~";
+		log->leveltag[6] = "~INF~";
+		log->leveltag[7] = "~DBG~";
+		log->leveltag[8] = "~DFL~";
+		log->leveltag[9] = "~CNT~";
+		log->leveltag[10] = "~CNS~";
 #ifdef ENABLE_THREADS
 		pthread_mutex_init(&log->file_lock, NULL);
 #endif
@@ -122,7 +133,7 @@ int logger_close(logger_p log)
 	}
 }
 
-int logger_log_header(logger_p log,unsigned int log_level ,const char *leveltag ,const char *srcname ,unsigned int line_no)
+int logger_log_header(logger_p log, unsigned int log_level, const char *srcname, unsigned int line_no)
 {
 	int ret_val = 0;
 	struct tm cur_time;
@@ -149,7 +160,7 @@ int logger_log_header(logger_p log,unsigned int log_level ,const char *leveltag 
 	//time(&temp_time);
 	temp_time = time(NULL);
 	localtime_r(&temp_time , &cur_time);
-	sprintf(logtag ,"[%s|%s|%d|%02d:%02d:%02d|%s]" ,log->tag ,srcname ,line_no ,cur_time.tm_hour ,cur_time.tm_min ,cur_time.tm_sec ,leveltag);
+	sprintf(logtag ,"[%s|%s|%d|%02d:%02d:%02d|%s]" ,log->tag ,srcname ,line_no ,cur_time.tm_hour ,cur_time.tm_min ,cur_time.tm_sec ,log->leveltag[log_level]);
 	/*  to be designed
 	if(log_level == DISP_SCREEN)
 	{
