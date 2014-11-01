@@ -79,13 +79,43 @@ int logger_unlock(logger_p log){
 }
 
 #endif
+int logger_apptag(logger_p log, const char *apptag){
+	if(log){
+		memset(log->tag, 0x00, sizeof(log->tag)); // clear tag buffer
+		strcpy(log->tag, apptag);
+	}else{
+		return -1;
+	}
+}
+
+int logger_filepath(logger_p log, const char *filepath){
+	if(log){
+		memset(log->path, 0x00, sizeof(log->path)); // clear tag buffer
+		strcpy(log->path, filepath);
+	}else{
+		return -1;
+	}
+}
+int logger_filename(logger_p log, const char *filename){
+	if(log){
+		memset(log->name, 0x00, sizeof(log->name)); // clear tag buffer
+		strcpy(log->name, filename);
+	}else{
+		return -1;
+	}
+}
 
 int logger_open(logger_p log)
 {
 	struct tm cur_time;
+	char cmd[512]={0x00};
 	char fname[PATH_MAX_SIZE + NAME_MAX_SIZE + 20]={0x00}; //additional 20 for time stamp
 	if(log)
 	{
+		sprintf(cmd, "mkdir -p %s", log->path);
+		if(system(cmd)){
+			fprintf(stderr, "creating of %s directory fail", log->path);
+		}
 		time(&log->create_time);
 		localtime_r(&log->create_time , &cur_time);
 		if(log->interval < 3600)
@@ -173,7 +203,7 @@ int logger_log_header(logger_p log, unsigned int log_level, const char *srcname,
 	return ret_val;
 }
 
-int logger_log_message(logger_p log,char *format ,...)
+int logger_log_message(logger_p log,const char *format ,...)
 {
 	int ret_val = 0;
 	va_list args;

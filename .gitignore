@@ -21,3 +21,15 @@
 *.i*86
 *.x86_64
 *.hex
+# Autotools 
+configure
+config.h.in
+config.h
+m4
+aclocal.m4
+autom4te.cache
+build-aux
+Makefile
+Makefile.in
+# ctags files
+tags

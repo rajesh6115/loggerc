@@ -11,7 +11,9 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdarg.h>
-
+#ifdef __cplusplus
+extern "C" {
+#endif
 #include "config.h"
 #ifdef ENABLE_THREADS
 #include <pthread.h>
@@ -32,10 +34,10 @@
 #define LOG_DEFAULT 8
 #define LOG_CONT 9
 #define LOG_CONSOL 10
-#define APP_LOGGER(OBJECT, LOG_LEVEL, LOGDATA) {\
+#define APP_LOGGER(OBJECT, LOG_LEVEL, LOGDATA, ...) {\
 	logger_lock(OBJECT);\
-	logger_log_header(OBJECT, LOG_LEVEL,__FILE__,__LINE__);\
-	logger_log_message(OBJECT, LOGDATA);\
+	logger_log_header(OBJECT, LOG_LEVEL, __FILE__, __LINE__);\
+	logger_log_message(OBJECT, LOGDATA, __VA_ARGS__);\
 	logger_unlock(OBJECT);\
 	}
 
@@ -43,7 +45,7 @@
 #define DFL_PATH "."
 #define DFL_TAG "LOG"
 #define DFL_INTERVAL 300
-#define DFL_LEVEL 5
+#define DFL_LEVEL 8
 
 typedef struct logger{
 	FILE *fp;  /* File pointer to hold file*/
@@ -54,7 +56,7 @@ typedef struct logger{
 	char path[PATH_MAX_SIZE]; /* Log file path*/
 	char name[NAME_MAX_SIZE]; /*Log file name*/
 	char tag[TAG_MAX_SIZE]; /*APPLICATION TAG*/
-	char *leveltag[11]; /*Log Level Tags Strings*/
+	const char *leveltag[11]; /*Log Level Tags Strings*/
 #ifdef ENABLE_THREADS
 	pthread_mutex_t file_lock;
 #endif
@@ -63,6 +65,9 @@ typedef logger_t * logger_p;
 
 logger_p logger_init(void);
 int logger_cleanup(logger_p);
+int logger_apptag(logger_p, const char *apptag );
+int logger_filepath(logger_p, const char *filepath);
+int logger_filename(logger_p, const char *filename);
 #ifdef ENABLE_THREADS
 int logger_lock(logger_p);
 int logger_unlock(logger_p);
@@ -71,8 +76,10 @@ int logger_open(logger_p);
 int logger_close(logger_p);
 int logger_set(logger_p, unsigned int option, const char *);
 int logger_log_header(logger_p log, unsigned int log_level, const char *srcname, unsigned int line_no);
-int logger_log_message(logger_p ,char *format ,...);
-
+int logger_log_message(logger_p ,const char *format ,...);
+#ifdef __cplusplus
+}
+#endif
 #endif
 
 
