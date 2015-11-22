@@ -11,7 +11,6 @@ AC_CONFIG_SRCDIR([src/clogger.c])
 # Check for C Compiler
 AC_PROG_CC
 AM_PROG_CC_C_O
-AC_CHECK_LIB(pthread, pthread_create,[AC_DEFINE(ENABLE_THREADS, 1, [Define this to enable threads.])],[AC_MSG_ERROR([required library pthread missing])])
 # config.h will be created and default header
 AC_CONFIG_HEADERS([config.h])
 # all Macro in this folder
